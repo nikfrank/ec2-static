@@ -3,12 +3,11 @@ var express = require('express')
   , path = require('path');
 
 var app = express();
-var MemoryStore = require('connect').session.MemoryStore;
-
-var dbresp = '';
+var pwd = process.argv[2]||'';
+var port = process.argv[3]||9991;
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 8888);
+  app.set('port', process.env.PORT || port);
   app.set('views', __dirname + '/public');
   app.set('view engine', 'ejs');
   app.use(express.favicon('./favicon.ico'));
@@ -29,14 +28,12 @@ app.get('/', function(req, res){
     res.sendfile('./'+pwd+'/index.html');
 });
 
-var pwd = process.argv[2]||'';
-
 app.get('*', function(req, res){
     var cleanurl = req.url.split('?')[0];
     if(pwd) return res.sendfile('./'+pwd+cleanurl);
     return res.sendfile('.'+cleanurl);
 });
 
-app.listen(process.env.PORT||8888, function(){
+app.listen(process.env.PORT||port, function(){
   console.log("Express server listening on port " + app.get('port'));
 });
